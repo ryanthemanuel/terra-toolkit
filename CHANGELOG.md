@@ -3,7 +3,7 @@ Changelog
 
 Unreleased
 ----------
-
+* Add custom assertions directory
 
 1.2.2 - (July 14, 2017)
 ------------------
