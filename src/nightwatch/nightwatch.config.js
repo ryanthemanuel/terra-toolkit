@@ -2,10 +2,33 @@
 /* eslint no-unused-vars: ["error", { "varsIgnorePattern": "chromedriver" }] */
 
 import chromedriver from 'chromedriver';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
 import { execSync } from 'child_process';
 import { sync as rimrafSync } from 'rimraf';
 
-const nightwatchConfig = (srcFolders) => {
+let port = 8080;
+
+const nightwatchConfig = (webpackConfig, srcFolders, providedPort) => {
+  if (providedPort) {
+    port = providedPort;
+  }
+
+  const webpackServer = new WebpackDevServer(webpack(webpackConfig), { quiet: true, hot: false, inline: false });
+
+  const before = (done) => {
+    chromedriver.start();
+    rimrafSync('.storybook-nightwatch');
+    execSync('npm run storybook:build -- -o .storybook-nightwatch');
+    webpackServer.listen(port, '0.0.0.0', () => done());
+  };
+
+  const after = (done) => {
+    webpackServer.close();
+    chromedriver.stop();
+    rimrafSync('.storybook-nightwatch');
+    done();
+  };
 
   const endBrowserSession = (browser, done) => browser.end(done);
 
@@ -22,7 +45,7 @@ const nightwatchConfig = (srcFolders) => {
     test_workers: false,
     test_settings: {
       default: {
-        launch_url: 'http://localhost',
+        launch_url: `http://localhost:${port}`,
         persist_globals: true,
         selenium_port: 9515,
         selenium_host: 'localhost',
@@ -40,18 +63,9 @@ const nightwatchConfig = (srcFolders) => {
           asyncHookTimeout: 30000,
           waitForConditionTimeout: 1000,
           retryAssertionTimeout: 1000,
-          before: (done) => {
-            chromedriver.start();
-            rimrafSync('.storybook-nightwatch');
-            execSync('npm run storybook:build -- -o .storybook-nightwatch');
-            done();
-          },
-          after: (done) => {
-            chromedriver.stop();
-            rimrafSync('.storybook-nightwatch');
-            done();
-          },
-          //afterEach: endBrowserSession,
+          before,
+          after,
+          afterEach: endBrowserSession,
         },
         filter: '**/*-spec.js',
         screenshots: {
