@@ -14,9 +14,19 @@ const nightwatchConfig = (webpackConfig, srcFolders, providedPort) => {
 
   const webpackServer = new WebpackDevServer(webpack(webpackConfig), { quiet: true, hot: false, inline: false });
 
+  const startDriver = () => new Promise((resolve) => {
+    const childProcess = chromedriver.start();
+    childProcess.stdout.once('data', () => {
+      resolve();
+    });
+  });
+
+  const startServer = () => new Promise((resolve) => {
+    webpackServer.listen(port, '0.0.0.0', resolve);
+  });
+
   const startDriverAndServer = (done) => {
-    chromedriver.start();
-    webpackServer.listen(port, '0.0.0.0', () => done());
+    Promise.all([startDriver(), startServer()]).then(done);
   };
 
   const stopDriverAndServer = (done) => {
