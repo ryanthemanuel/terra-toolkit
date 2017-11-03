@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-let axeCoreSrc = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'node_modules', 'axe-core', 'axe.min.js'), 'utf8');
+let axeCoreSrc = fs.readFileSync(path.join('node_modules', 'axe-core', 'axe.min.js'), 'utf8');
 axeCoreSrc = axeCoreSrc.replace(/^\/\*.*\*\//, '');
 
 export default class AxeService {
