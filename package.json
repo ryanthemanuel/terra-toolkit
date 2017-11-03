@@ -24,7 +24,7 @@
   },
   "scripts": {
     "clean:all": "npm run clean:compiled && npm run clean:dependencies",
-    "clean:compiled": "rimraf lib",
+    "clean:compiled": "if [ -d './src' ]; then rimraf ./lib; fi",
     "clean:dependencies": "rimraf node_modules",
     "clean:install": "npm run clean:all && npm install && npm run compile:build",
     "compile": "npm run clean:compiled && npm run compile:build",
