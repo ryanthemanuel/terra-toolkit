@@ -64,7 +64,10 @@ export default class SeleniumDockerService {
     this.browserName = capabilities[0].browserName;
     this.cidfile = this.config.cidfile || this.cidfile;
 
+    console.log('Returning Promise');
+
     return new Promise((resolve, reject) => {
+      console.log('On Prepare Promise ' + this.config.toString());
       if (this.config.enabled) {
         const containerId = this.getContainerId();
         if (!containerId) {
