@@ -22,6 +22,7 @@ export default class SeleniumDockerService {
     }, (res) => {
       const { statusCode } = res;
       if (statusCode !== 200) {
+        console.log('Request failed: ' + statusCode);
         callback('Request failed');
         return;
       }
