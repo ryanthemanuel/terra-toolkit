@@ -76,8 +76,10 @@ export default class SeleniumDockerService {
         // Retry for 500 times up to 5 seconds for selenium to start
         retry({ times: 500, interval: 10 }, this.getSeleniumStatus, (err, result) => {
           if (err) {
+            console.log('Error ' + err);
             reject(err);
           } else {
+            console.log('Success ' + result);
             resolve(result);
           }
         });
