@@ -74,7 +74,11 @@ export default class SeleniumDockerService {
         if (!containerId) {
           const dockerString = `docker run --rm --cidfile ${this.cidfile} -p ${config.port}:4444 ${this.getImage()}`;
           console.log(dockerString);
-          console.log('Exec!!!!! + ' + exec(dockerString));
+          exec(dockerString, (err, stdout, stderr) => {
+            console.log('Error after docker ' + err);
+            console.log('stdout after docker ' + stdout);
+            console.log('stderr after docker ' + stderr);
+          });
         }
         // Retry for 500 times up to 5 seconds for selenium to start
         retry({ times: 500, interval: 10 }, this.getSeleniumStatus, (err, result) => {
