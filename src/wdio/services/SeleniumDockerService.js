@@ -14,9 +14,10 @@ export default class SeleniumDockerService {
   }
 
   getSeleniumStatus(callback) {
-    console.log('getting selenium status' + this.host);
+    console.log('getting selenium status ' + this.host);
+    const hostToUse = this.host;
     http.get({
-      host: this.host,
+      host: hostToUse,
       port: this.port,
       path: path.join(this.path || '/wd/hub', 'status'),
     }, (res) => {
