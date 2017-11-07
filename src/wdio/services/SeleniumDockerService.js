@@ -74,6 +74,7 @@ export default class SeleniumDockerService {
       if (this.config.enabled) {
         const containerId = this.getContainerId();
         if (!containerId) {
+          execSync(`docker pull ${this.getImage()}`);
           const dockerString = `docker run -d --rm --cidfile ${this.cidfile} -p ${config.port}:4444 ${this.getImage()}`;
           console.log(dockerString);
           const updatedContainerId = execSync(dockerString, (err, stdout, stderr) => {
