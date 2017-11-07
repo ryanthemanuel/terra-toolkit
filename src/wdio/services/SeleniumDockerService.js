@@ -15,9 +15,8 @@ export default class SeleniumDockerService {
 
   getSeleniumStatus(callback) {
     console.log('getting selenium status ' + this.host);
-    const hostToUse = this.host;
     http.get({
-      host: hostToUse,
+      host: this.host,
       port: this.port,
       path: path.join(this.path || '/wd/hub', 'status'),
     }, (res) => {
@@ -88,7 +87,8 @@ export default class SeleniumDockerService {
 
           const dockerHostString = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`;
           console.log(dockerHostString);
-          this.host = execSync(dockerHostString);
+          this.host = String(execSync(dockerHostString)).trim();
+          console.log(typeof this.host);
           console.log('Host!!!! ' + this.host);
         }
         // Retry for 500 times up to 5 seconds for selenium to start
