@@ -31,7 +31,7 @@
     "compile:build": "babel src --out-dir lib --copy-files",
     "danger": "danger",
     "lint": "eslint --ext .js,.jsx .",
-    "prepare": "npm run compile:build",
+    "prepare": "npm run compile:build --unsafe-perm",
     "prepublishOnly": "npm test",
     "pretest": "npm run lint",
     "release:major": "node scripts/release/release.js major",
