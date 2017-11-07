@@ -14,7 +14,7 @@ export default class SeleniumDockerService {
   }
 
   getSeleniumStatus(callback) {
-    console.log('getting selenium status');
+    console.log('getting selenium status' + this.host);
     http.get({
       host: this.host,
       port: this.port,
