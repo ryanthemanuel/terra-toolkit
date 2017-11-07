@@ -82,6 +82,8 @@ export default class SeleniumDockerService {
             console.log('stderr after docker ' + stderr);
           });
 
+          console.log('Updated Container Id ' + updatedContainerId);
+
           this.host = execSync(`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`);
         }
         // Retry for 500 times up to 5 seconds for selenium to start
