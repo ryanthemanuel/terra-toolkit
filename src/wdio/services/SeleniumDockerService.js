@@ -85,7 +85,10 @@ export default class SeleniumDockerService {
 
           console.log('Updated Container Id ' + updatedContainerId);
 
-          this.host = execSync(`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`);
+          const dockerHostString = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`;
+          console.log(dockerHostString);
+          this.host = execSync(dockerHostString);
+          console.log('Host!!!! ' + this.host);
         }
         // Retry for 500 times up to 5 seconds for selenium to start
         retry({ times: 500, interval: 10 }, this.getSeleniumStatus, (err, result) => {
