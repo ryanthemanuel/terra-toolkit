@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 import retry from 'async/retry';
 import http from 'http';
 import path from 'path';
@@ -74,13 +74,15 @@ export default class SeleniumDockerService {
       if (this.config.enabled) {
         const containerId = this.getContainerId();
         if (!containerId) {
-          const dockerString = `docker run --rm --cidfile ${this.cidfile} -p ${config.port}:4444 ${this.getImage()}`;
+          const dockerString = `docker run -d --rm --cidfile ${this.cidfile} -p ${config.port}:4444 ${this.getImage()}`;
           console.log(dockerString);
-          exec(dockerString, (err, stdout, stderr) => {
+          const updatedContainerId = execSync(dockerString, (err, stdout, stderr) => {
             console.log('Error after docker ' + err);
             console.log('stdout after docker ' + stdout);
             console.log('stderr after docker ' + stderr);
           });
+
+          this.host = execSync(`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`);
         }
         // Retry for 500 times up to 5 seconds for selenium to start
         retry({ times: 500, interval: 10 }, this.getSeleniumStatus, (err, result) => {
@@ -127,7 +129,7 @@ export default class SeleniumDockerService {
     if (this.config.cleanup) {
       const containerId = this.getContainerId();
       if (containerId) {
-        exec(`docker stop ${containerId}`);
+        execSync(`docker stop ${containerId}`);
         fs.unlinkSync(this.cidfile);
       }
     }
