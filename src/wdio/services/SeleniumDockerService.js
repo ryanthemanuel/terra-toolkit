@@ -88,6 +88,7 @@ export default class SeleniumDockerService {
           const dockerHostString = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${updatedContainerId}`;
           console.log(dockerHostString);
           this.host = String(execSync(dockerHostString)).trim();
+          config.host = this.host;
           console.log(typeof this.host);
           console.log('Host!!!! ' + this.host);
         }
