@@ -51,6 +51,7 @@ const defaultWebpackConfig = (env = {}, argv = {}) => {
               ident: 'postcss',
               plugins() {
                 return [
+                  rtl(),
                   Autoprefixer({
                     browsers: [
                       'ie >= 10',
@@ -60,7 +61,6 @@ const defaultWebpackConfig = (env = {}, argv = {}) => {
                       'iOS >= 10',
                     ],
                   }),
-                  rtl(),
                 ];
               },
             },
