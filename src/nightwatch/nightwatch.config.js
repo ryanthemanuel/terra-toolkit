@@ -49,7 +49,7 @@ const nightwatchConfig = (webpackConfig, srcFolders, providedPort) => {
 
   const config = {
     selenium: {
-      start_process: false,
+      start_process: true,
     },
     src_folders: srcFolders,
     output_folder: 'reports',
