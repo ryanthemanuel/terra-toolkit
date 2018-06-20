@@ -115,7 +115,7 @@ export default class SeleniumDockerService {
   */
   initSwarm() {
     console.log('[SeleniumDocker] Initializing docker swarm');
-    return this.execute('docker swarm init');
+    return this.execute('docker swarm init -- advertise-addr 10.0.75.1');
   }
 
   /**
