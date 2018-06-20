@@ -35,6 +35,7 @@ export default class SeleniumDockerService {
       const dockerInfo = await this.getDockerInfo();
       if (dockerInfo.Swarm.LocalNodeState !== 'active') {
         await this.initSwarm();
+        console.log('Swarm Initialized');
       }
 
       // Always start with a fresh stack
@@ -82,6 +83,7 @@ export default class SeleniumDockerService {
   * @return {Promise} which resolves to a string representing the stack, or null if none exists.
   */
   getStack() {
+    console.log('Getting stack');
     return new Promise((resolve) => {
       exec('docker stack ls | grep wdio', (error, stdout) => {
         resolve(stdout);
