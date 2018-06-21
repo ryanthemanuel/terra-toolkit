@@ -145,6 +145,7 @@ export default class SeleniumDockerService {
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout) => {
         if (error) {
+          console.log(error);
           reject(error);
         } else {
           resolve(stdout);
