@@ -180,6 +180,7 @@ export default class SeleniumDockerService {
   * @param {function} callback taking (err, result).
   */
   getSeleniumStatus(callback) {
+    console.log(path.posix.join(this.path || '/wd/hub', 'status'));
     http.get({
       host: this.host,
       port: this.port,
