@@ -181,13 +181,12 @@ export default class SeleniumDockerService {
   */
   getSeleniumStatus(callback) {
     console.log('gettingStatus');
-    console.log(this.host);
-    console.log(this.port);
     http.get({
       host: this.host,
       port: this.port,
       path: path.posix.join(this.path || '/wd/hub', 'status'),
     }, (res) => {
+      console.log('Response is ', res);
       const { statusCode } = res;
       if (statusCode !== 200) {
         callback('Request failed');
