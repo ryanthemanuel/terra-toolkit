@@ -45,7 +45,7 @@ export default class SeleniumDockerService {
       }
 
       await this.deployStack();
-      //await this.ensureSelenium();
+      await this.ensureSelenium();
       console.log('Selenium Ensured');
     }
   }
