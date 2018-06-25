@@ -3,7 +3,11 @@ describe('matchScreenshot', () => {
   const viewports = Terra.viewports('tiny', 'huge');
 
   before(() => {
+    // Flush old performance logs
+    browser.log('performance');
     browser.url('/compare.html');
+    const perfLogs = browser.log('performance');
+    console.log(`Page load duration: ${perfLogs.value[perfLogs.value.length - 1].timestamp - perfLogs.value[0].timestamp}`);
     browser.setViewportSize(viewports[0]);
   });
 
@@ -79,4 +83,10 @@ describe('matchScreenshot', () => {
   describe('matchScreenshot-invalid options', () => {
     Terra.should.matchScreenshot('test-invalid-options', [viewports.tiny, viewports.huge]);
   });
+});
+
+describe('Chrome version', () => {
+  before(() => browser.url('chrome://version'));
+
+  Terra.should.matchScreenshot('chrome version', { selector: '#inner', viewports: [{ width: 1500, height: 1500 }] });
 });

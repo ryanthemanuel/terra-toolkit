@@ -2,7 +2,14 @@
 describe('comparing screenshots', () => {
   const viewports = Terra.viewports('tiny', 'huge');
 
-  before(() => browser.url('/compare.html'));
+  before(() => {
+    // Flush old performance logs
+    browser.log('performance');
+    browser.url('/compare.html');
+    const perfLogs = browser.log('performance');
+    console.log(perfLogs);
+    console.log(`Page load duration: ${perfLogs.value[perfLogs.value.length - 1].timestamp - perfLogs.value[0].timestamp}`);
+  });
 
   it('[0] checks visual comparison with shortened id', () => {
     const screenshots = browser.checkElement('button', { viewports });

@@ -1,6 +1,12 @@
 /* global browser, describe, beforeEach, Terra */
 describe('themeEachCustomProperty', () => {
-  beforeEach(() => browser.url('/theme.html'));
+  beforeEach(() => {
+    // Flush old performance logs
+    browser.log('performance');
+    browser.url('/theme.html');
+    const perfLogs = browser.log('performance');
+    console.log(`Page load duration: ${perfLogs.value[perfLogs.value.length - 1].timestamp - perfLogs.value[0].timestamp}`);
+  });
 
   Terra.should.themeEachCustomProperty({
     '--color': 'red',
@@ -19,7 +25,13 @@ describe('themeEachCustomProperty', () => {
 
 /* global browser, describe, beforeEach, Terra */
 describe('themeCombinationOfCustomProperties', () => {
-  beforeEach(() => browser.url('/theme.html'));
+  beforeEach(() => {
+    // Flush old performance logs
+    browser.log('performance');
+    browser.url('/theme.html');
+    const perfLogs = browser.log('performance');
+    console.log(`Page load duration: ${perfLogs.value[perfLogs.value.length - 1].timestamp - perfLogs.value[0].timestamp}`);
+  });
 
   Terra.should.themeCombinationOfCustomProperties({
     testName: 'themed',
