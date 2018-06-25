@@ -180,7 +180,7 @@ export default class SeleniumDockerService {
   * @param {function} callback taking (err, result).
   */
   getSeleniumStatus(callback) {
-    console.log('gettingStatus');
+    console.log('gettingStatus from ', this.host);
     http.get({
       host: this.host,
       port: this.port,
