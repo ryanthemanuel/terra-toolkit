@@ -13,7 +13,6 @@ const Repository = require('lerna/lib/Repository');
 const ip = process.env.WDIO_EXTERNAL_HOST || localIP.address();
 const webpackPort = process.env.WDIO_EXTERNAL_PORT || 8080;
 const ci = (process.env.TRAVIS || process.env.CI) && !process.env.APPVEYOR;
-console.log('ci is ', ci);
 
 const config = {
   specs: [

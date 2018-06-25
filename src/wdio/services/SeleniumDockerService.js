@@ -25,7 +25,7 @@ export default class SeleniumDockerService {
       ...(config.seleniumDocker || {}),
     };
 
-    this.host = config.host;
+    this.host = 'localhost';//config.host;
     this.port = config.port;
     this.path = config.path;
 
@@ -180,7 +180,8 @@ export default class SeleniumDockerService {
   * @param {function} callback taking (err, result).
   */
   getSeleniumStatus(callback) {
-    console.log('gettingStatus from ', this.host);
+    console.log('gettingStatus from host', this.host);
+    console.log('port', this.port);
     http.get({
       host: this.host,
       port: this.port,
