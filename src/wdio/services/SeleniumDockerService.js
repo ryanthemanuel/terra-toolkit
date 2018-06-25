@@ -25,7 +25,7 @@ export default class SeleniumDockerService {
       ...(config.seleniumDocker || {}),
     };
 
-    this.host = 'localhost';//config.host;
+    this.host = config.host;
     this.port = config.port;
     this.path = config.path;
 
