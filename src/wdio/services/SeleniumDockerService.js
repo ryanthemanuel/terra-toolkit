@@ -124,6 +124,7 @@ export default class SeleniumDockerService {
   */
   deployStack() {
     console.log('[SeleniumDocker] Deploying docker selenium stack');
+    console.log(`docker stack deploy --compose-file ${this.config.composeFile} wdio`);
     return this.execute(`docker stack deploy --compose-file ${this.config.composeFile} wdio`);
   }
 
