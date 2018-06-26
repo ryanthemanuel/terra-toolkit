@@ -211,6 +211,7 @@ export default class SeleniumDockerService {
         }
       });
     }).on('error', (e) => {
+      console.log('Error  is ', e);
       callback(`Request failed: ${e.message}`);
     });
   }
