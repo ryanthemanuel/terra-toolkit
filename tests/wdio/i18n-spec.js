@@ -1,6 +1,4 @@
 /* global browser, describe, it, before, expect, Terra */
-const fs = require('fs');
-const summary = require('./browser-perf-summary');
 const TraceToTimelineModel = require('devtools-timeline-model');
 
 let testLocale;
@@ -46,7 +44,6 @@ function cleanTrace(traceEvents) {
     frame = (evt.args && evt.args.frame) || (data && (data.frame || data.page));
 
     if (!frame) {
-      // console.log('!frame');
       return;
     }
 
@@ -92,8 +89,6 @@ function cleanTrace(traceEvents) {
   return traceEvents;
 }
 
-const reverseString = input => input.split('').reverse().join('');
-
 function dumpScreenshot(filmStripModel) {
   const frames = filmStripModel.frames();
   const framesLen = frames.length;
@@ -112,15 +107,16 @@ function dumpTree(tree, timeValue) {
   return result;
 }
 
-function report(events, filename, title) {
+function report(events, title) {
   const model = new TraceToTimelineModel(events);
 
   if (!console.group) {
     console.group = n => console.log(n, ':');
     console.groupEnd = () => console.log('');
   }
-  console.group(filename);
-  console.log(`\n${title}\n`);
+  console.log('\n');
+  console.group(title);
+  // console.log(`\n${title}\n`);
 
   console.log('Timeline model events:\n', model.timelineModel().mainThreadEvents().length);
   console.log('IR model interactions\n', model.interactionModel().interactionRecords().length);
@@ -157,7 +153,7 @@ function report(events, filename, title) {
   // console.log('Bottom up tree:\n', model.bottomUp())
   // console.log('Top down tree, grouped by URL:\n', model.topDownGroupedUnsorted)
   // console.log('Bottom up tree grouped by URL:\n', model.bottomUpGroupBy('None'))
-  console.groupEnd(filename);
+  console.groupEnd(title);
 }
 
 describe('I18n Locale', () => {
@@ -165,87 +161,46 @@ describe('I18n Locale', () => {
     // Flush old performance logs
     browser.log('performance');
     browser.url('/i18n.html');
+
     const perfLogs = browser.log('performance');
-    const time = Date.now();
-    // De-mangleify the logs
-    let perfLogsStringified = JSON.stringify(perfLogs.value, null, 2);
-    if (!fs.existsSync('traces')) {
-      fs.mkdir('traces');
-    }
-    // fs.writeFile(`traces/preprocess-${time}.json`, perfLogsStringified);
 
-    /*
-     * If we ever upgrade to EMCA 2018 where negative lookbehind is supported then the reverseStrings
-     * can be removed and the regex replaced with /(?<!\\\\)\\"/g
-    */
-    perfLogsStringified = reverseString(perfLogsStringified);
-    perfLogsStringified = perfLogsStringified.replace(/"\\(?!(\\\\))/g, '"');
-    perfLogsStringified = reverseString(perfLogsStringified);
-
-    perfLogsStringified = perfLogsStringified.replace(/"{"/g, '{"');
-    perfLogsStringified = perfLogsStringified.replace(/"}"/g, '"}');
-    // fs.writeFile(`traces/partial-${time}.json`, perfLogsStringified);
-    const betterPerfLogs = JSON.parse(perfLogsStringified);
     let rawEvents = [];
-    betterPerfLogs.forEach((item) => {
-      if (item.message.message.params.cat && item.message.message.params.name) {
-        rawEvents = rawEvents.concat(item.message.message.params);
+    let itemMessage;
+    perfLogs.value.forEach((item) => {
+      itemMessage = JSON.parse(item.message);
+      if (itemMessage.message.params.cat && itemMessage.message.params.name) {
+        rawEvents = rawEvents.concat(itemMessage.message.params);
       }
     });
+
     rawEvents = cleanTrace(rawEvents);
-    summary.onData(rawEvents);
-    // console.log(JSON.stringify(perfLogs));
-    // perfLogsStringified = perfLogsStringified.replace(/","/g, '",');
-    const filename = `traces/profile-${time}.devtools.trace`;
-    fs.writeFile(filename, JSON.stringify(rawEvents, null, 2));
-    console.log(`saved trace to ${filename}`);
-    summary.report(filename);
-    try {
-      report(rawEvents, filename, 'Page Navigation');
-    } catch (error) {
-      console.error(error);
-      console.log('Raw Events:');
-      console.log(rawEvents);
-    }
+
+    report(rawEvents, 'Page load test');
+
     testLocale = browser.options.locale || 'en';
     browserLocale = browser.getAttribute('html', 'lang');
   });
 
   it('Express correctly sets the application locale', () => {
     // Flush old performance logs
-    console.log('\n\nhello there\n\n');
     browser.log('performance');
     browser.setValue('#input-wdio-defined', testLocale);
     browser.setValue('#input-actual', browserLocale);
     expect(testLocale).to.equal(browserLocale);
     const perfLogs = browser.log('performance');
-    // De-mangleify the logs
-    let perfLogsStringified = JSON.stringify(perfLogs.value, null, 2);
-    // perfLogsStringified = perfLogsStringified.replace(/\\"/g, '"');
-    perfLogsStringified = reverseString(perfLogsStringified);
-    perfLogsStringified = perfLogsStringified.replace(/"\\(?!(\\\\))/g, '"');
-    perfLogsStringified = reverseString(perfLogsStringified);
-    perfLogsStringified = perfLogsStringified.replace(/"{"/g, '{"');
-    perfLogsStringified = perfLogsStringified.replace(/"}"/g, '"}');
-    const betterPerfLogs = JSON.parse(perfLogsStringified);
+
     let rawEvents = [];
-    betterPerfLogs.forEach((item) => {
-      if (item.message.message.params.cat && item.message.message.params.name) {
-        rawEvents = rawEvents.concat(item.message.message.params);
+    let itemMessage;
+    perfLogs.value.forEach((item) => {
+      itemMessage = JSON.parse(item.message);
+      if (itemMessage.message.params.cat && itemMessage.message.params.name) {
+        rawEvents = rawEvents.concat(itemMessage.message.params);
       }
     });
+
     rawEvents = cleanTrace(rawEvents);
-    summary.onData(rawEvents);
-    // console.log(JSON.stringify(perfLogs));
-    const filename = `traces/profile-${Date.now()}.devtools.trace`;
-    // perfLogsStringified = perfLogsStringified.replace(/","/g, '",');
-    if (!fs.existsSync('traces')) {
-      fs.mkdir('traces');
-    }
-    fs.writeFile(filename, JSON.stringify(rawEvents, null, 2));
-    summary.report(filename);
-    console.log(`saved trace to ${filename}`);
-    report(rawEvents, filename, 'Locale test');
+
+    report(rawEvents, 'Locale test');
   });
 
   Terra.should.matchScreenshot({ selector: '#i18n-validation' });
@@ -254,49 +209,25 @@ describe('I18n Locale', () => {
 describe('test', () => {
   it('does stuff', () => {
     browser.log('performance');
+
     browser.url('https://engineering.cerner.com/terra-core/#/tests/terra-avatar/avatar/update-avatar');
 
     browser.click('#variant');
     browser.click('#initials');
 
     const perfLogs = browser.log('performance');
-    const time = Date.now();
-    // De-mangleify the logs
-    let perfLogsStringified = JSON.stringify(perfLogs.value, null, 2);
-    if (!fs.existsSync('traces')) {
-      fs.mkdir('traces');
-    }
-    // fs.writeFile(`traces/preprocess-${time}.json`, perfLogsStringified);
 
-    /*
-     * If we ever upgrade to EMCA 2018 where negative lookbehind is supported then the reverseStrings
-     * can be removed and the regex replaced with /(?<!\\\\)\\"/g
-    */
-    perfLogsStringified = reverseString(perfLogsStringified);
-    perfLogsStringified = perfLogsStringified.replace(/"\\(?!(\\\\))/g, '"');
-    perfLogsStringified = reverseString(perfLogsStringified);
-
-    perfLogsStringified = perfLogsStringified.replace(/\\\\\\"/g, '\\"');
-    perfLogsStringified = perfLogsStringified.replace(/\\\\/g, '\\');
-    perfLogsStringified = perfLogsStringified.replace(/"{"/g, '{"');
-    perfLogsStringified = perfLogsStringified.replace(/"}"/g, '"}');
-    // fs.writeFile(`traces/partial-${time}.json`, perfLogsStringified);
-    const betterPerfLogs = JSON.parse(perfLogsStringified);
     let rawEvents = [];
-    betterPerfLogs.forEach((item) => {
-      if (item.message.message.params.cat && item.message.message.params.name) {
-        rawEvents = rawEvents.concat(item.message.message.params);
+    let itemMessage;
+    perfLogs.value.forEach((item) => {
+      itemMessage = JSON.parse(item.message);
+      if (itemMessage.message.params.cat && itemMessage.message.params.name) {
+        rawEvents = rawEvents.concat(itemMessage.message.params);
       }
     });
-    rawEvents = cleanTrace(rawEvents);
-    summary.onData(rawEvents);
-    // console.log(JSON.stringify(perfLogs));
-    // perfLogsStringified = perfLogsStringified.replace(/","/g, '",');
-    const filename = `traces/profile-${time}.devtools.trace`;
-    fs.writeFile(filename, JSON.stringify(rawEvents, null, 2));
-    console.log(`saved trace to ${filename}`);
-    summary.report(filename);
 
-    report(rawEvents, filename, 'Avatar test');
+    rawEvents = cleanTrace(rawEvents);
+
+    report(rawEvents, 'Avatar test');
   });
 });

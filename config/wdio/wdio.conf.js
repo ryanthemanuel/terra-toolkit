@@ -9,7 +9,7 @@ const PackageUtilities = require('lerna/lib/PackageUtilities');
 const Repository = require('lerna/lib/Repository');
 const visualRegressionConfig = require('./visualRegressionConf');
 
-const TRACE_CATEGORIES = ['-*', 'devtools.timeline', 'disabled-by-default-devtools.timeline',
+const TRACE_CATEGORIES = ['devtools.timeline', 'disabled-by-default-devtools.timeline',
   'disabled-by-default-devtools.timeline.frame', 'toplevel', 'blink.console', 'disabled-by-default-devtools.timeline.stack',
   'disabled-by-default-devtools.screenshot', 'disabled-by-default-v8.cpu_profile', 'disabled-by-default-v8.cpu_profiler',
   'disabled-by-default-v8.cpu_profiler.hires', 'latencyInfo', 'rail', 'v8'];
@@ -35,13 +35,9 @@ const config = {
         performance: 'ALL',
       },
       'goog:chromeOptions': {
-        // args: ['enable-logging', 'log-level=0'],
-        // excludeSwitches: ['enable-logging'],
-        args: ['--enable-gpu-benchmarking', '--enable-threaded-compositing'/*, '--enable-logging=chromelogs'*/],
+        args: ['--enable-gpu-benchmarking', '--enable-threaded-compositing'],
         perfLoggingPrefs: {
           traceCategories: TRACE_CATEGORIES.join(','),
-          // More categories: toplevel,disabled-by-default-devtools.timeline.frame,blink.console,disabled-by-default-devtools.timeline,benchmark
-          // Working categories: v8,blink.console,disabled-by-default-devtools.timeline
         },
       },
     },

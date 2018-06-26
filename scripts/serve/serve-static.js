@@ -148,7 +148,7 @@ const serveSite = (site, fs, index, locale, verbose) => {
 // Generate a site if not provided and spin up an express server to serve the site.
 const serve = (options) => {
   const {
-    site, config, port, disk, index, locale, production, host, verbose,
+    site, config, port, disk, index, locale, production, host, verbose, callback,
   } = options;
 
   const appPort = port || 8080;
@@ -160,6 +160,11 @@ const serve = (options) => {
     .then((app) => {
       const server = app.listen(appPort, host);
       console.log(`[Terra-Toolkit:serve-static] Server started listening at port:${appPort}`);
+
+      if (callback) {
+        callback();
+      }
+
       return server;
     });
 };
