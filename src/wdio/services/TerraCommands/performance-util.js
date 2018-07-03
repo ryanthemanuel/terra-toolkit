@@ -111,8 +111,18 @@ const gatherPerformanceLogs = (toTest) => {
   return new TraceToTimelineModel(rawEvents);
 };
 
-const getScriptRuntime = () => {
+const getScriptRuntime = (toTest, scriptRegex) => {
+  const perfLogs = gatherPerformanceLogs(toTest);
+  const bottomUpURL = perfLogs.bottomUpGroupBy('URL');
 
+  const keys = Array.from(bottomUpURL.children.keys());
+  const scriptName = keys.find(key => scriptRegex.test(key));
+  if (!scriptName) {
+    throw Error(`Script Search Regex ${scriptRegex} has no matches`);
+  }
+
+  return bottomUpURL.children.get(scriptName).totalTime;
 };
 
-module.exports = gatherPerformanceLogs;
+module.exports.gatherPerformanceLogs = gatherPerformanceLogs;
+module.exports.getScriptRuntime = getScriptRuntime;

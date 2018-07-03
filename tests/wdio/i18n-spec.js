@@ -1,5 +1,5 @@
 /* global browser, describe, it, before, expect, Terra */
-const testPerformance = require('../../src/wdio/services/TerraCommands/performance-util');
+const performanceUtil = require('../../src/wdio/services/TerraCommands/performance-util');
 const cycle = require('./cycle');
 const fs = require('fs');
 
@@ -50,6 +50,9 @@ function report(events, title) {
   const bottomUpURL = model.bottomUpGroupBy('URL');
   // If there were any resource requests (I think)
   if (bottomUpURL) {
+    fs.writeFile('topDown.json', JSON.stringify([...dumpTree(model.bottomUpGroupBy('URL'), 'totalTime')], null, 2), (error) => {
+      if (error) console.log(error);
+    });
     // const secondTopCost = [...bottomUpURL.children.values()][1];
     console.log('bottom up tree, grouped by URL', dumpTree(bottomUpURL, 'selfTime'));
     // console.log('Bottom up tree, grouped, 2nd top URL:\n', secondTopCost.totalTime.toFixed(2), secondTopCost.id);
@@ -76,7 +79,7 @@ function report(events, title) {
 
 describe('I18n Locale', () => {
   before(() => {
-    testPerformance(() => {
+    performanceUtil.gatherPerformanceLogs(() => {
       browser.url('/i18n.html');
       testLocale = browser.options.locale || 'en';
       browserLocale = browser.getAttribute('html', 'lang');
@@ -94,14 +97,15 @@ describe('I18n Locale', () => {
 
 describe('test', () => {
   it('does stuff', () => {
-    const results = testPerformance(() => {
+    const results = performanceUtil.getScriptRuntime(() => {
       browser.url('https://engineering.cerner.com/terra-core/#/tests/terra-avatar/avatar/update-avatar');
 
       browser.click('#variant');
       browser.click('#initials');
-    });
-    report(results, 'Avatar Update');
-    fs.writeFile('results.json', JSON.stringify(cycle.decycle(results), null, 2));
+    }, /terra-dev-site/);
+    console.log(results);
+    // report(results, 'Avatar Update');
+    // fs.writeFile('results.json', JSON.stringify(cycle.decycle(results), null, 2));
     /* console.log(testPerformance(() => {
       browser.url('https://engineering.cerner.com/terra-core/#/tests/terra-avatar/avatar/update-avatar');
 
