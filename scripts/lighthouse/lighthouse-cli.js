@@ -1,10 +1,7 @@
 /* eslint-disable no-console */
 const commander = require('commander');
 const lighthouseTest = require('./lighthouse');
-const lighthousePerfConfig = require('lighthouse/lighthouse-core/config/perf-config.js');
 const loadWebpackConfig = require('../serve/loadWebpackConfig');
-
-const fs = require('fs');
 
 const packageJson = require('../../package.json');
 
@@ -39,11 +36,22 @@ if (!commander.config) {
 
 const port = commander.port || process.env.PORT;
 const configPath = loadWebpackConfig(commander.config);
+
 const chromeFlags = commander.chromeFlags || [];
 if (commander.headless) {
   chromeFlags.push('--headless');
 }
-const lighthouseConfig = commander.perf ? lighthousePerfConfig : {
+
+const lighthouseFlags = {};
+if (commander.saveArtifacts) {
+  lighthouseFlags.gatherMode = true;
+  lighthouseFlags.auditMode = true;
+}
+if (commander.perf) {
+  lighthouseFlags.onlyCategories = ['performance'];
+}
+
+const lighthouseConfig = {
   // Extend Lighthouse's default config
   extends: true,
 };
@@ -58,10 +66,7 @@ lighthouseTest(
   },
   chromeFlags,
   commander.pages,
-  {
-    gatherMode: commander.saveArtifacts,
-    auditMode: commander.saveArtifacts,
-  },
+  lighthouseFlags,
   lighthouseConfig,
   (results) => {
     results.forEach((result) => {
