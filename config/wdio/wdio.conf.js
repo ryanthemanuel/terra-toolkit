@@ -12,7 +12,7 @@ const visualRegressionConfig = require('./visualRegressionConf');
 const TRACE_CATEGORIES = ['devtools.timeline', 'disabled-by-default-devtools.timeline',
   'disabled-by-default-devtools.timeline.frame', 'toplevel', 'blink.console', 'disabled-by-default-devtools.timeline.stack',
   'disabled-by-default-devtools.screenshot', 'disabled-by-default-v8.cpu_profile', 'disabled-by-default-v8.cpu_profiler',
-  'disabled-by-default-v8.cpu_profiler.hires', 'latencyInfo', 'rail', 'v8'];
+  'disabled-by-default-v8.cpu_profiler.hires', 'latencyInfo', 'rail', 'v8', 'net'];
 
 const ip = process.env.WDIO_EXTERNAL_HOST || localIP.address();
 const webpackPort = process.env.WDIO_EXTERNAL_PORT || 8080;
