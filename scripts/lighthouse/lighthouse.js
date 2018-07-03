@@ -28,7 +28,7 @@ const onBuildFinished = (chromeFlags, pages, lighthouseFlags, lighthouseConfig, 
     }
     /* eslint-enable no-await-in-loop */
 
-    console.log(`Lighthouse finished${pages.length > 1 && ' all pages'}`);
+    console.log(`Lighthouse finished${pages.length > 1 ? ' all pages' : ''}`);
     chrome.kill();
     server.close();
     finishedCallback(results);
@@ -47,9 +47,9 @@ const onBuildFinished = (chromeFlags, pages, lighthouseFlags, lighthouseConfig, 
  * @param chromeFlags Flags to pass to chrome at startup
  * @param pages An array of urls to test with lighthouse
  * @param lighthouseFlags Flags to be passed to lighthouse. See:
- *   https://github.com/GoogleChrome/lighthouse/blob/v2.9.4/typings/externs.d.ts#L9
+ *   https://github.com/GoogleChrome/lighthouse/blob/36a2a546d207c0f3abf73b7de924c48f8ce93581/typings/externs.d.ts#L73
  * @param lighthouseConfig Config options to be passed to lighthouse. See:
- *   https://github.com/GoogleChrome/lighthouse/blob/v2.9.4/docs/configuration.md
+ *   https://github.com/GoogleChrome/lighthouse/blob/36a2a546d207c0f3abf73b7de924c48f8ce93581/docs/configuration.md
  * @param finishedCallback Callback for when all pages have been tested with lighthouse
  * @return An object with a page property for which page was tested and either a results property or an error property
  */

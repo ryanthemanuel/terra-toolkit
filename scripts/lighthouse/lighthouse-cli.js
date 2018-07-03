@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 const commander = require('commander');
 const lighthouseTest = require('./lighthouse');
-const lighthousePerfConfig = require('lighthouse/lighthouse-core/config/perf.json');
+const lighthousePerfConfig = require('lighthouse/lighthouse-core/config/perf-config.js');
 const loadWebpackConfig = require('../serve/loadWebpackConfig');
+
+const fs = require('fs');
 
 const packageJson = require('../../package.json');
 
@@ -70,16 +72,15 @@ lighthouseTest(
       console.group(`\nLighthouse results for ${result.page}\n`);
 
       console.group('Categories and scores');
-      result.result.reportCategories.forEach((element) => {
-        console.log(`${element.name}: ${element.score}`);
+      Object.keys(result.result.lhr.categories).forEach((key) => {
+        console.log(`${result.result.lhr.categories[key].title}: ${result.result.lhr.categories[key].score}`);
       });
       console.groupEnd('Categories and scores');
 
-      console.log('\n');
-      console.log(`First meaningful paint: ${result.result.audits['first-meaningful-paint'].displayValue}`);
-      console.log(`First Interactive: ${result.result.audits['first-interactive'].displayValue}`);
+      console.log(`First Contentful paint: ${result.result.lhr.audits['first-contentful-paint'].rawValue} ms`);
+      console.log(`First Interactive: ${result.result.lhr.audits.interactive.rawValue} ms`);
 
-      console.groupEnd(`\nLighthouse results for ${result}\n`);
+      console.groupEnd(`\nLighthouse results for ${result.page}\n`);
     });
   },
 );

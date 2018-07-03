@@ -57,7 +57,7 @@
     "wdio-webpack-func": "TT_TEST_WDIO_FUNCTION=true wdio",
     "tt-wdio-webpack-obj": "node scripts/wdio/wdio-runner-cli.js",
     "tt-wdio-webpack-func": "TT_TEST_WDIO_FUNCTION=true node scripts/wdio/wdio-runner-cli.js",
-    "lighthouse-test": "node scripts/lighthouse/lighthouse-cli.js --config ./tests/test.config.js --pages http://localhost:8080"
+    "lighthouse-test": "node scripts/lighthouse/lighthouse-cli.js --config ./tests/test.config.js --pages https://engineering.cerner.com/terra-core/#/home"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -79,7 +79,7 @@
     "glob": "^7.1.1",
     "ip": "^1.1.5",
     "lerna": "^2.8.0",
-    "lighthouse": "^2.9.4",
+    "lighthouse": "^3.0.1",
     "load-json-file": "^5.0.0",
     "lodash.startcase": "^4.4.0",
     "memory-fs": "^0.4.1",
