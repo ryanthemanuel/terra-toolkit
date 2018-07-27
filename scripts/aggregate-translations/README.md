@@ -1,6 +1,8 @@
 # Aggregating Translations
 Terra-toolkit provides the `aggregate-translations` pre-build tool to assist with creating the translation, intl loader and translation loader files that are configured for the specified locales. This tool is offered as a CLI script and as a setup function.
 
+When using terra-toolkit's default webpack configuration, this tool will automatically be enabled. It will attempt to load the aggregated-translations configuration from the `terraI18n.config.js` file and if this file is not present, the default configuration is used.
+
 ## How It Works
 This script globs the specified translation directory regex pattern(s) to locate the translation directories. Then,
 for each specified locale, the message-translation pairs from each translation json is extracted and added to the locale's message hash. When all messages have been extracted, the `aggregate-translations` script will create a single translation javascript file for each locale that exports the `messages` object, `areTranslationsLoaded` boolean and `locale` string. When a translation file is requested by terra-i18n's `I18nProvider`, this information is returned and used to provide the locale information.
