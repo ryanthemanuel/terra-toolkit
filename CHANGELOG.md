@@ -5,6 +5,7 @@ Unreleased
 ----------
 ### Added
 * Accept 'output-filename', 'output-path' and 'output-public-path' webpack cli argv options to be passed into configuration.
+* Added dynamic import syntax babel plugin
 
 ### Change
 * Extend file-loader to load otf, eot, ttf, svg, woff, woff2 font files
