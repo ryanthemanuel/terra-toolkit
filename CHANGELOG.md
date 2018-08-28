@@ -3,8 +3,18 @@ Changelog
 
 Unreleased
 ----------
+* Fixed wdio clean-screenshots utility incorrectly resolving path of config file
+
+4.10.1 - (August 27, 2018)
+----------
+### Changed
+* Pinned version of axe-core to 3.0.3
+
+4.10.0 - (August 21, 2018)
+----------
 ### Changed
 * Bumped node-sass dependency to v4.9.3. This version should work better on latest High Sierra OS on mac.
+* Fixed aggregated-translations locales and tt-wdio formFactors and locales flag to not include single quotes in output file names on Windows.
 
 4.9.0 - (August 14, 2018)
 ----------
