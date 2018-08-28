@@ -4,7 +4,7 @@
 * rules, runOnly, and contex. See https://www.axe-core.org/docs/.
 */
 const beAccessible = (options) => {
-  global.it('is accessible', () => {
+  global.it('is accessible @a11y', () => {
     global.expect(global.browser.axe(options)).to.be.accessible();
   });
 };

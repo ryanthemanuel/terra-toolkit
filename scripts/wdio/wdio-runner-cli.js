@@ -19,8 +19,9 @@ commander
   .option('--host <number>', '[wdio option] The selenium server port', undefined)
   .option('--port <string>', '[wdio option] The selenium server host address', undefined)
   .option('--baseUrl <path>', '[wdio option] The base URL', undefined)
-  .option('--suite <path>', '[wdio option] The suite to run', undefined)
+  .option('--suite <string>', '[wdio option] The suite to run', undefined)
   .option('--spec <path>', '[wdio option] The spec file to run', undefined)
+  .option('--mochaOpts.grep <pattern>', '[wdio option] The mochaOpts tag to grep and run tests against', undefined)
   .parse(process.argv);
 
 const {
@@ -36,12 +37,12 @@ const {
   updateReference,
 } = commander;
 
+const mochaOptsGrep = commander['mochaOpts.grep'];
 const configPath = getWdioConfigPath(config);
 
 cleanScreenshots({
   configPath, updateReference,
 });
-
 runner({
   // terra-toolkit wdio runner options
   configPath,
@@ -54,4 +55,5 @@ runner({
   ...baseUrl && { baseUrl },
   ...spec && { spec },
   ...suite && { suite },
+  ...mochaOptsGrep && { mochaOpts: { grep: mochaOptsGrep } },
 });

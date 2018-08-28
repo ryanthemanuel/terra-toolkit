@@ -57,7 +57,8 @@
     "wdio-webpack-func": "TT_TEST_WDIO_FUNCTION=true wdio --suite opinionated",
     "tt-wdio-webpack-obj": "node scripts/wdio/wdio-runner-cli.js --suite opinionated",
     "tt-wdio-webpack-func": "TT_TEST_WDIO_FUNCTION=true node scripts/wdio/wdio-runner-cli.js --suite opinionated",
-    "tt-wdio-unopinionated": "node scripts/wdio/wdio-runner-cli.js --formFactors=['tiny','huge'] --locales=['en','fr'] --suite unopinionated"
+    "tt-wdio-unopinionated": "node scripts/wdio/wdio-runner-cli.js --formFactors=['tiny','huge'] --locales=['en','fr'] --suite unopinionated",
+    "tt-wdio-sample": "node scripts/wdio/wdio-runner-cli.js --formFactors=['tiny'] --locales=['en'] --suite unopinionated"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -123,6 +124,7 @@
     "jest": "^23.1.0",
     "nightwatch": "^0.9.12",
     "rimraf": "^2.6.1",
-    "shelljs": "^0.8.2"
+    "shelljs": "^0.8.2",
+    "wdio-spec-reporter": "^0.1.5"
   }
 }

@@ -49,7 +49,7 @@ const themeEachCustomProperty = (...args) => {
   const styleProperties = args[args.length - 1];
 
   Object.entries(styleProperties).forEach(([key, value]) => {
-    global.it(`themed [${key}]`, () => {
+    global.it(`themed [${key}] @VR @themeTest`, () => {
       global.browser.execute(`document.documentElement.style.setProperty('${key}', '${value}')`);
       global.expect(global.browser.checkElement(selector)).to.matchReference();
     });
@@ -70,7 +70,7 @@ const themeCombinationOfCustomProperties = (...args) => {
 A testName property should be set in the options object passed to the themeCombinationOfCustomProperties to uniquely identify it.`);
   }
 
-  global.it(`[${args[0].testName}]`, () => {
+  global.it(`[${args[0].testName}] @VR @themeTest`, () => {
     Object.entries(styleProperties).forEach(([key, value]) => {
       global.browser.execute(`document.documentElement.style.setProperty('${key}', '${value}')`);
     });
@@ -99,7 +99,7 @@ const matchScreenshot = (testArguments, matchType) => {
   const { name, selector, options } = determineScreenshotOptions(...testArguments);
 
   const testDescription = getTestDescription(matchType);
-  global.it(`[${name}] to ${testDescription}`, () => {
+  global.it(`[${name}] to ${testDescription} @VR`, () => {
     const screenshots = global.browser.checkElement(selector, options);
 
     const viewports = options.viewports;

@@ -35,7 +35,7 @@ const config = {
       'tests/wdio/theme-spec.js',
     ],
   },
-
+ reporters: ['spec'],
   // Configuration for ServeStaticService
   webpackConfig,
 };
