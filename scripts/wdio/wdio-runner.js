@@ -1,4 +1,4 @@
-const Launcher = require('wdio-cli');
+const Launcher = require('wdio-cli').default;
 
 async function wdioRunner(options) {
   const {
