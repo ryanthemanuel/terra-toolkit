@@ -1,4 +1,4 @@
-const Launcher = require('wdio-cli').default;
+const { Launcher } = require('webdriverio');
 
 async function wdioRunner(options) {
   const {
