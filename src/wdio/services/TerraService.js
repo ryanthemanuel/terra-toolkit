@@ -43,7 +43,6 @@ const setViewport = (formFactor) => {
 export default class TerraService {
   // eslint-disable-next-line class-methods-use-this
   before() {
-    setViewport(global.browser.options.formFactor);
     chai.config.showDiff = false;
     global.expect = chai.expect;
     global.should = chai.should();
@@ -58,5 +57,6 @@ export default class TerraService {
     };
     chai.Assertion.addMethod('accessible', chaiMethods.accessible);
     chai.Assertion.addMethod('matchReference', chaiMethods.matchReference);
+    setViewport(global.browser.options.formFactor);
   }
 }
