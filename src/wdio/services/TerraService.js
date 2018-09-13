@@ -60,4 +60,8 @@ export default class TerraService {
     // global.browser.windowHandlePosition({x: 10, y: 10});
     // setViewport(global.browser.options.formFactor);
   }
+  
+  async onPrepare() {
+    setViewport(global.browser.options.formFactor);
+  }
 }
