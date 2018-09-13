@@ -61,7 +61,7 @@ export default class TerraService {
     // setViewport(global.browser.options.formFactor);
   }
   
-  async onPrepare() {
+  beforeSuite() {
     setViewport(global.browser.options.formFactor);
   }
 }
