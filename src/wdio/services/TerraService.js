@@ -58,8 +58,8 @@ export default class TerraService {
     chai.Assertion.addMethod('accessible', chaiMethods.accessible);
     chai.Assertion.addMethod('matchReference', chaiMethods.matchReference);
     // global.browser.windowHandlePosition({x: 10, y: 10});
-    global.browser.timeouts('implicit', 5000);
-    global.browser.timeouts('script', 60000);
+    global.browser.timeouts('implicit', 300000);
+    global.browser.timeouts('script', 300000);
     global.browser.pause(5000);
     setViewport(global.browser.options.formFactor);
   }
