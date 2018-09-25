@@ -61,7 +61,6 @@ export default class TerraService {
   }
   
   beforeSuite() {
-    global.browser.timeouts('script', 300000);
     setViewport(global.browser.options.formFactor);
   }
 }
