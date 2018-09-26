@@ -27,11 +27,24 @@ const setViewport = (formFactor) => {
   if (formFactor) {
     const terraViewport = VIEWPORTS[formFactor];
     if (terraViewport !== undefined && typeof terraViewport === 'object') {
+      console.log('SET! ', terraViewport);
       global.browser.setViewportSize(terraViewport);
     } else {
       throw new Error('The formFactor supplied is not a Terra-defined viewport size.');
     }
   }
+};
+
+const promiseSetViewport = (formFactor) => {
+  return new Promise((resolve) => {
+    setViewport(formFactor);
+    resolve();
+  });
+};
+
+const delay = (ms) => {
+  console.log('delaying...');
+  return new Promise(resolve => setTimeout(resolve, ms));
 };
 
 /**
@@ -42,8 +55,18 @@ const setViewport = (formFactor) => {
 */
 export default class TerraService {
   // eslint-disable-next-line class-methods-use-this
-  before() {
-    setViewport(global.browser.options.formFactor);
+  async before() {
+    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+      console.log('before delaying...');
+      await delay(3000);
+      console.log('setting viewport');
+      await promiseSetViewport(global.browser.options.formFactor);
+      console.log('AFTER setting viewport');
+      await delay(1500);
+    } else {
+      setViewport(global.browser.options.formFactor);
+    }
+
     chai.config.showDiff = false;
     global.expect = chai.expect;
     global.should = chai.should();
