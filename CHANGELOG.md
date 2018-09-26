@@ -3,8 +3,12 @@ Changelog
 
 Unreleased
 ----------
+
+4.12.0 - (September 25, 2018)
+----------
 ### Changed
 * Updated linter and linter plugins
+* Locked webpack version to 4.19.0
 
 4.11.1 - (August 29, 2018)
 ----------
