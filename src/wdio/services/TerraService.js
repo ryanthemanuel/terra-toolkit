@@ -35,12 +35,12 @@ const setViewport = (formFactor) => {
   }
 };
 
-const promiseSetViewport = (formFactor) => {
-  return new Promise((resolve) => {
+const promiseSetViewport = formFactor => (
+  new Promise((resolve) => {
     setViewport(formFactor);
     resolve();
-  });
-};
+  })
+);
 
 const delay = (ms) => {
   console.log('delaying...');
