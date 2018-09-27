@@ -58,11 +58,11 @@ export default class TerraService {
   async before() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('before delaying...');
-      await delay(3000);
+      await delay(10000);
       console.log('setting viewport');
       await promiseSetViewport(global.browser.options.formFactor);
       console.log('AFTER setting viewport');
-      await delay(3000);
+      await delay(10000);
     } else {
       setViewport(global.browser.options.formFactor);
     }
