@@ -1,4 +1,6 @@
 import chai from 'chai';
+import fs from 'fs';
+import path from 'path';
 import chaiMethods from './TerraCommands/chai-methods';
 import accessiblity from './TerraCommands/accessiblity';
 import visualRegression from './TerraCommands/visual-regression';
@@ -53,6 +55,11 @@ export default class TerraService {
   async before() {
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
+    let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
+    wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
+
+    await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
+
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('before delaying...');
       await global.browser.pause(10000);
@@ -61,7 +68,7 @@ export default class TerraService {
       console.log('AFTER setting viewport');
       await global.browser.pause(10000);
     } else {
-      setViewport(global.browser.options.formFactor);
+      await setViewport(global.browser.options.formFactor);
     }
 
     chai.config.showDiff = false;
