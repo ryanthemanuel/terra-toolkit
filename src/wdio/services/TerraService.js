@@ -51,7 +51,6 @@ export default class TerraService {
    */
   // eslint-disable-next-line class-methods-use-this
   async before() {
-    this.validateConfig(global.browser.options);
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
