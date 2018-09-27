@@ -62,7 +62,7 @@ export default class TerraService {
       console.log('setting viewport');
       await promiseSetViewport(global.browser.options.formFactor);
       console.log('AFTER setting viewport');
-      await delay(10000);
+      await delay(30000);
     } else {
       setViewport(global.browser.options.formFactor);
     }
