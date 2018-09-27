@@ -55,10 +55,8 @@ export default class TerraService {
   async before() {
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
-    let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
-    wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
 
-    await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
+
 
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('before delaying...');
@@ -67,6 +65,9 @@ export default class TerraService {
       await setViewport(global.browser.options.formFactor);
       console.log('AFTER setting viewport');
       await global.browser.pause(10000);
+      let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
+      wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
+      await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
     } else {
       await setViewport(global.browser.options.formFactor);
     }
