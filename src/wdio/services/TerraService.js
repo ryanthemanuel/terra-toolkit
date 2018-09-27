@@ -4,6 +4,7 @@ import accessiblity from './TerraCommands/accessiblity';
 import visualRegression from './TerraCommands/visual-regression';
 import SERVICE_DEFAULTS from '../../../config/wdio/services.default-config';
 
+/* eslint-disable no-console */
 const { terraViewports: VIEWPORTS } = SERVICE_DEFAULTS;
 
 /**
@@ -23,29 +24,17 @@ const getViewports = (...sizes) => {
 * Sets the viewport for the test run if the formFactor config is defined.
 * @param formFactor - [String] the viewport size.
 */
-const setViewport = (formFactor) => {
+async function setViewport(formFactor) {
   if (formFactor) {
     const terraViewport = VIEWPORTS[formFactor];
     if (terraViewport !== undefined && typeof terraViewport === 'object') {
       console.log('SET! ', terraViewport);
-      global.browser.setViewportSize(terraViewport);
+      await global.browser.setViewportSize(terraViewport);
     } else {
       throw new Error('The formFactor supplied is not a Terra-defined viewport size.');
     }
   }
-};
-
-const promiseSetViewport = formFactor => (
-  new Promise((resolve) => {
-    setViewport(formFactor);
-    resolve();
-  })
-);
-
-const delay = (ms) => {
-  console.log('delaying...');
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
+}
 
 /**
 * Webdriver.io TerraService
@@ -54,15 +43,24 @@ const delay = (ms) => {
 * provides accessibliy and visual regression test steps.
 */
 export default class TerraService {
+  /**
+   * Gets executed before test execution begins. At this point you can access
+   * all global variables, such as `browser`.
+   * It is the perfect place to define custom commands.
+   * @return {Promise}
+   */
   // eslint-disable-next-line class-methods-use-this
   async before() {
+    this.validateConfig(global.browser.options);
+    console.log('\n\n', global.browser.desiredCapabilities.browserName);
+
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('before delaying...');
-      await delay(10000);
+      await global.browser.pause(10000);
       console.log('setting viewport');
-      await promiseSetViewport(global.browser.options.formFactor);
+      await setViewport(global.browser.options.formFactor);
       console.log('AFTER setting viewport');
-      await delay(30000);
+      await global.browser.pause(10000);
     } else {
       setViewport(global.browser.options.formFactor);
     }
