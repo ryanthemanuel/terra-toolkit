@@ -55,9 +55,6 @@ export default class TerraService {
   async before() {
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
-
-
-
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('before delaying...');
       await global.browser.pause(10000);
@@ -65,9 +62,9 @@ export default class TerraService {
       await setViewport(global.browser.options.formFactor);
       console.log('AFTER setting viewport');
       await global.browser.pause(10000);
-      let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
-      wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
-      await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
+      // let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
+      // wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
+      // await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
     } else {
       await setViewport(global.browser.options.formFactor);
     }
@@ -86,5 +83,22 @@ export default class TerraService {
     };
     chai.Assertion.addMethod('accessible', chaiMethods.accessible);
     chai.Assertion.addMethod('matchReference', chaiMethods.matchReference);
+
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async beforeCommand() {
+    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+      console.log('...before command...');
+      await global.browser.pause(3000);
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async afterCommand() {
+    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+      console.log('...after command...');
+      await global.browser.pause(3000);
+    }
   }
 }
