@@ -86,10 +86,23 @@ export default class TerraService {
 
   }
 
+
+  // eslint-disable-next-line class-methods-use-this
+  async beforeHook() {
+    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+      console.log('...before hook...');
+      await global.browser.pause(10000);
+      let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
+      wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
+      await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
+      await global.browser.pause(10000);
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   async beforeCommand() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
-      console.log('...before command...');
+      console.log('---before command---');
       await global.browser.pause(5000);
     }
   }
@@ -97,7 +110,7 @@ export default class TerraService {
   // eslint-disable-next-line class-methods-use-this
   async afterCommand() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
-      console.log('...after command...');
+      console.log('---after command---');
       await global.browser.pause(5000);
     }
   }
