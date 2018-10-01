@@ -90,7 +90,7 @@ export default class TerraService {
   async beforeCommand() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('...before command...');
-      await global.browser.pause(3000);
+      await global.browser.pause(5000);
     }
   }
 
@@ -98,7 +98,7 @@ export default class TerraService {
   async afterCommand() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('...after command...');
-      await global.browser.pause(3000);
+      await global.browser.pause(5000);
     }
   }
 }
