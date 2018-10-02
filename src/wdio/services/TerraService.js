@@ -26,17 +26,17 @@ const getViewports = (...sizes) => {
 * Sets the viewport for the test run if the formFactor config is defined.
 * @param formFactor - [String] the viewport size.
 */
-async function setViewport(formFactor) {
+const setViewport = (formFactor) => {
   if (formFactor) {
     const terraViewport = VIEWPORTS[formFactor];
     if (terraViewport !== undefined && typeof terraViewport === 'object') {
       console.log('SET! ', terraViewport);
-      await global.browser.setViewportSize(terraViewport);
+      global.browser.setViewportSize(terraViewport);
     } else {
       throw new Error('The formFactor supplied is not a Terra-defined viewport size.');
     }
   }
-}
+};
 
 /**
 * Webdriver.io TerraService
@@ -55,19 +55,20 @@ export default class TerraService {
   async before() {
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
-    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
-      console.log('before delaying...');
-      await global.browser.pause(10000);
-      console.log('setting viewport');
-      await setViewport(global.browser.options.formFactor);
-      console.log('AFTER setting viewport');
-      await global.browser.pause(10000);
+//     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+//       console.log('before delaying...');
+//       await global.browser.pause(10000);
+//       console.log('setting viewport');
+//       await setViewport(global.browser.options.formFactor);
+//       console.log('AFTER setting viewport');
+//       await global.browser.pause(10000);
       // let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
       // wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
       // await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
-    } else {
-      await setViewport(global.browser.options.formFactor);
-    }
+//     } else {
+//       await setViewport(global.browser.options.formFactor);
+//     }
+     setViewport(global.browser.options.formFactor);
 
     chai.config.showDiff = false;
     global.expect = chai.expect;
@@ -91,7 +92,7 @@ export default class TerraService {
   async beforeHook() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('...before hook...');
-      await global.browser.pause(10000);
+//       await global.browser.pause(10000);
       let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
       wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
       await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
@@ -99,19 +100,19 @@ export default class TerraService {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async beforeCommand() {
-    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
-      console.log('---before command---');
-      await global.browser.pause(5000);
-    }
-  }
+//   eslint-disable-next-line class-methods-use-this
+//   async beforeCommand() {
+//     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+//       console.log('---before command---');
+//       await global.browser.pause(5000);
+//     }
+//   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async afterCommand() {
-    if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
-      console.log('---after command---');
-      await global.browser.pause(5000);
-    }
-  }
+//   // eslint-disable-next-line class-methods-use-this
+//   async afterCommand() {
+//     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
+//       console.log('---after command---');
+//       await global.browser.pause(5000);
+//     }
+//   }
 }
