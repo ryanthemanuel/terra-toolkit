@@ -52,7 +52,7 @@ export default class TerraService {
    * @return {Promise}
    */
   // eslint-disable-next-line class-methods-use-this
-  async before() {
+  before() {
     console.log('\n\n', global.browser.desiredCapabilities.browserName);
 
 //     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
@@ -89,14 +89,14 @@ export default class TerraService {
 
 
   // eslint-disable-next-line class-methods-use-this
-  async beforeHook() {
+  beforeHook() {
     if (global.browser.desiredCapabilities.browserName === 'internet explorer') {
       console.log('...before hook...');
 //       await global.browser.pause(10000);
       let wgxpathSrc = fs.readFileSync(path.resolve('node_modules', 'wgxpath', 'wgxpath.install.js'));
       wgxpathSrc = wgxpathSrc.toString().split('module.exports')[0];
-      await global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
-      await global.browser.pause(10000);
+      global.browser.execute(`${wgxpathSrc}\nwgxpath.install(window);`);
+      global.browser.pause(10000);
     }
   }
 
