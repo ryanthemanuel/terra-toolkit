@@ -61,8 +61,8 @@ function getScreenshotDir(context) {
   const testForm = `${browserName}_${formFactor}`;
   const testSuite = path.parse(context.test.file).name;
 
-  if (context.options.useSuiteAsDir) {
-    return path.join(locale, testForm, testSuite, context.suite.title);
+  if (context.options.groupingDirectory) {
+    return path.join(locale, testForm, context.options.groupingDirectory);
   }
   return path.join(locale, testForm, testSuite);
 }

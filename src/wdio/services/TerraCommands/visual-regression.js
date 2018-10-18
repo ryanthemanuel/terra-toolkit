@@ -25,9 +25,9 @@ const determineScreenshotOptions = (...args) => {
   const selector = options.selector || global.browser.options.terra.selector;
 
   const compareOptions = {};
-  
-  // Determines if the screenshots should be organized with a directory based on the suite
-  compareOptions.useSuiteAsDir = options.useSuiteAsDir || false;
+
+  // Determines the grouping directory of the screenshots
+  compareOptions.groupingDirectory = options.groupingDirectory;
 
   // Which viewports the screenshoot should adjust to & take screenshot. Supplying [] results in current viewport size.
   compareOptions.viewports = options.viewports || [];
