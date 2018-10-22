@@ -67,6 +67,7 @@ const themeEachCustomProperty = (...args) => {
 const themeCombinationOfCustomProperties = (...args) => {
   const selector = args[0].selector ? args[0].selector : global.browser.options.terra.selector;
   const styleProperties = args[0].properties ? args[0].properties : [];
+  const groupingDirectory = args[0].groupingDirectory;
 
   if (!args[0].testName) {
     throw new Error(`A test name for themeCombinationOfCustomProperties test is not provided.
@@ -77,7 +78,7 @@ A testName property should be set in the options object passed to the themeCombi
     Object.entries(styleProperties).forEach(([key, value]) => {
       global.browser.execute(`document.documentElement.style.setProperty('${key}', '${value}')`);
     });
-    global.expect(global.browser.checkElement(selector)).to.matchReference();
+    global.expect(global.browser.checkElement(selector, { groupingDirectory })).to.matchReference();
   });
 };
 
