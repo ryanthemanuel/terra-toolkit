@@ -35,7 +35,7 @@ export default class ServeStaticService {
 
   static startService(config, port, index, locale, verbose) {
     return serveStatic({
-      config, port, index, production: true, locale, verbose,
+      config, port, index, production: true, locale, verbose, site: process.env.SERVE_STATIC_SITE,
     });
   }
 
