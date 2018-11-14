@@ -50,7 +50,7 @@
     "nightwatch": "nightwatch",
     "nightwatch:port-provided": "nightwatch -c tests/test.nightwatch.conf.js",
     "pack": "webpack --config tests/test.config.js",
-    "prepare": "npm run compile",
+    "prepare": "echo 'PREPARE TERRA-TOOLKIT' && npm run compile",
     "prepublishOnly": "npm test",
     "pretest": "npm run lint",
     "release:major": "node scripts/release/release.js major",
