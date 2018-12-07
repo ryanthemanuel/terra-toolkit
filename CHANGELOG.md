@@ -6,6 +6,69 @@ Unreleased
 ### Added
 * Add pause to the Terra service setup for IE browsers when setting the viewport. IE browsers need more time before being interacted with.
 
+4.20.0 - (December 6, 2018)
+----------
+### Changed
+* Upgraded webpack-cli to 3.0.0 and unlocked webpack version.
+
+### Changed
+* Aggregrate-translations tool now outputs pre-compiled tranlstaions jsons, intl loaders and translations loaders to prevent the need for the compilation during webpack. This resolves SCRIPT1002: Syntax error with IE.
+
+4.19.0 - (November 20, 2018)
+----------
+### Changed
+* Added configuration option (disableThemeTests) to disable theme functions in wdio tests
+
+4.18.0 - (November 19, 2018)
+----------
+### Changed
+* Replaced uglifyjs-webpack-plugin with terser-webpack-plugin
+
+4.17.0 - (November 14, 2018)
+----------
+### Changed
+* Loosen node version via npm engine to accept any version over 8.9.2
+* Update .npmrc file to use latest v8.x release (lts/carbon)
+
+4.16.1 - (November 13, 2018)
+----------
+### Fixed
+* Remove parseInt for serve-cli port value. Casting it to a number caused the default value to return NaN.
+
+4.16.0 - (November 9, 2018)
+----------
+### Added
+* Added `site` wdio configuration option such that a relative path to a static site can used in the ServeStatic service. This option can be utilized to speed up tt-wdio runs by removing duplicated webpack compilation.
+* Added `tt-pack` script for packing packages into a tar archive file.
+
+### Fixed
+* Cast serve-cli port value to be a number to prevent NaN from being passed as the port value for the server.
+
+### Changed
+* Give more info on webpack mode in serve-static startup
+
+4.15.0 - (October 23, 2018)
+----------
+### Added
+* Add pause to the Terra service setup for IE browsers when setting the viewport. IE browsers need more time before being interacted with.
+
+### Fixed
+* Updated test suite determination logic to prevent empty test suites from being created.
+
+4.14.0 - (October 16, 2018)
+----------
+### Removed
+* Lerna dependency
+
+### Changed
+* Switch back to using webpack-dev-server for tt-serve due to webpack deprecating webpack-serve in favor of webpack-dev-server.
+
+
+4.13.0 - (October 8, 2018)
+----------
+### Changed
+* Updated aggregated translation loader to load translations relative to generated translations directory
+
 4.12.0 - (September 25, 2018)
 ----------
 ### Changed

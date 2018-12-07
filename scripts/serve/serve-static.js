@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 const express = require('express');
+const fse = require('fs-extra');
 const path = require('path');
 const webpack = require('webpack');
 const clone = require('clone');
@@ -14,16 +15,16 @@ const compile = (webpackConfig, disk) => (
     if (!disk) {
       compiler.outputFileSystem = new MemoryFS();
     }
-    console.log('[Terra-Toolkit:serve-static] Webpack compilation started');
+    console.log('[Terra-Toolkit:serve-static] Starting Webpack compilation');
     compiler.run((err, stats) => {
       if (err || stats.hasErrors()) {
-        console.log('[Terra-Toolkit:serve-static] Webpack compiled unsuccessfully');
+        console.log(`[Terra-Toolkit:serve-static] Webpack failed to compile in ${webpackConfig.mode} mode`);
         reject(err || new Error(stats.toJson().errors));
       } else {
         if (stats.hasWarnings()) {
           console.warn(stats.toJson().warnings);
         }
-        console.log('[Terra-Toolkit:serve-static] Webpack compiled successfully');
+        console.log(`[Terra-Toolkit:serve-static] Webpack compiled successfully in ${webpackConfig.mode} mode`);
         resolve([webpackConfig.output.path, compiler.outputFileSystem]);
       }
     });
@@ -34,7 +35,13 @@ const compile = (webpackConfig, disk) => (
 const generateSite = (site, config, disk, production) => {
   if (site) {
     const sitePath = path.join(process.cwd(), site);
-    return Promise.resolve([sitePath, undefined]);
+
+    if (fse.existsSync(sitePath) && fse.lstatSync(sitePath).isDirectory()) {
+      const fileSystem = disk ? fse : undefined;
+      return Promise.resolve([sitePath, fileSystem]);
+    }
+
+    return Promise.reject(new Error(`[Terra-Toolkit:serve-static] Could not serve static site from ${sitePath}.`));
   }
 
   if (config) {
@@ -71,7 +78,6 @@ const setSiteLocale = (fileContent, locale) => {
   return content.replace(/<html/, `<html ${langLocale}`);
 };
 
-
 // Setup an app server that reads from a filesystem.
 const virtualApp = (site, index, locale, fs, verbose) => {
   const app = express();
@@ -93,7 +99,7 @@ const virtualApp = (site, index, locale, fs, verbose) => {
         return;
       }
 
-      const fileExt = path.extname(filename);
+      const fileExt = path.extname(filename).replace(/(\?).*/, '');
       res.setHeader('content-type', mime.contentType(fileExt));
 
       if (fileExt === '.html') {
