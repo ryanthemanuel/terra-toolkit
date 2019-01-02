@@ -1,5 +1,5 @@
 const path = require('path');
-const { LocalCompare } = require('wdio-visual-regression-service/compare');
+const TerraCompare = require('../../lib/wdio/compare/TerraCompare').default;
 const { terraViewports: VIEWPORTS } = require('./services.default-config');
 
 const screenshotSetup = {
@@ -66,7 +66,8 @@ function getScreenshotDir(context) {
 
 function getScreenshotPath(ref) {
   return (context) => {
-    let testPath = path.dirname(context.test.file);
+    let testPath = path.join(path.basename(process.cwd()), process.env.BUILD_IDENTIFIER, path.relative(process.cwd(), path.dirname(context.test.file)));
+    console.log(testPath);
 
     const baseDir = global.browser.options.baseScreenshotDir;
     if (baseDir) {
@@ -84,7 +85,7 @@ function getScreenshotPath(ref) {
 }
 
 module.exports = {
-  compare: new LocalCompare({
+  compare: new TerraCompare({
     referenceName: getScreenshotPath('reference'),
     screenshotName: getScreenshotPath('screenshot'),
     diffName: getScreenshotPath('diff'),
