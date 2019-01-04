@@ -59,7 +59,7 @@
     "start": "node scripts/serve/serve-cli.js --config ./tests/test.config",
     "start-static": "node scripts/serve/serve-static-cli.js --config ./tests/test.config",
     "test": "npm run jest && npm run nightwatch && npm run nightwatch:port-provided && npm run wdio",
-    "wdio": "npm run wdio-webpack-obj",
+    "wdio": "node scripts/screenshot-maintenance/cleanScreenshots.js && npm run wdio-webpack-obj && node scripts/screenshot-maintenance/updateGithubStatus.js",
     "wdio-webpack-obj": "wdio --suite opinionated",
     "wdio-webpack-func": "TT_TEST_WDIO_FUNCTION=true wdio --suite opinionated",
     "tt-wdio-webpack-obj": "node scripts/wdio/wdio-runner-cli.js --suite opinionated",
@@ -67,9 +67,10 @@
     "tt-wdio-unopinionated": "npm run pack; node scripts/wdio/wdio-runner-cli.js --formFactors=['tiny','huge'] --locales=['en','fr'] --suite unopinionated; rm -rf ./build"
   },
   "dependencies": {
+    "@octokit/rest": "^16.3.0",
     "async": "^2.5.0",
     "autoprefixer": "^8.5.2",
-    "aws-sdk": "^2.372.0",
+    "aws-sdk": "^2.382.0",
     "axe-core": "3.0.3",
     "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.23.0",

@@ -1,4 +1,3 @@
-import fs from 'fs-extra';
 import BaseCompare from 'wdio-visual-regression-service/lib/methods/BaseCompare';
 import resemble from 'node-resemble-js';
 import get from 'lodash.get';
@@ -10,7 +9,6 @@ AWS.config.update({
 
 const s3 = new AWS.S3({
   apiVersion: '2006-03-01',
-  params: { Bucket: 'comparescreenshotsstack-screenshotbucket-1jv69rl51vze7' },
 });
 
 export default class TerraCompare extends BaseCompare {
@@ -23,50 +21,76 @@ export default class TerraCompare extends BaseCompare {
     this.ignoreComparison = get(options, 'ignoreComparison', 'nothing');
   }
 
+  static async bucketExists(bucketName) {
+    const bucketExists = await s3.headBucket({
+      Bucket: bucketName,
+    }).promise().then((data) => {
+      console.log(`Success: ${data}`);
+      return Promise.resolve(true);
+    }).catch((error) => {
+      console.log(`Failure: ${error}`);
+      return Promise.resolve(false);
+    });
+    console.log(`Bucket exists: ${bucketExists}`);
+    return bucketExists;
+  }
+
   async processScreenshot(context, base64Screenshot) {
+    const bucketName = process.env.TRAVIS_PULL_REQUEST_SLUG.replace(/[?<>/\\|*":+.]/g, '-');
+    const bucketExists = await TerraCompare.bucketExists(bucketName);
+    if (!bucketExists) {
+      console.log('Creating bucket');
+      await s3.createBucket({
+        Bucket: bucketName,
+        ACL: 'public-read',
+      }).promise().then((data) => {
+        console.log(`Success: ${data}`);
+      }).catch((error) => {
+        console.log(`Failure: ${error}`);
+      });
+    }
+
     const screenshotPath = this.getScreenshotFile(context);
     const referencePath = this.getReferenceFile(context);
     const diffPath = this.getDiffFile(context);
 
-    // await fs.outputFile(screenshotPath, base64Screenshot, 'base64');
-
-    // console.log(`https://s3.amazonaws.com/comparescreenshotsstack-screenshotbucket-1jv69rl51vze7/${referencePath.slice(1)}`);
-    // const referenceExists = await fs.exists(`https://s3.amazonaws.com/comparescreenshotsstack-screenshotbucket-1jv69rl51vze7/${referencePath.slice(1)}`);
-
     const referenceData = await s3.getObject({
+      Bucket: bucketName,
       Key: referencePath,
     }).promise().then(data => Promise.resolve(data.Body)).catch(() => Promise.resolve(undefined));
+    const capturedData = Buffer.from(base64Screenshot, 'base64');
 
-    if (!referenceData) {
-      // console.log('comparing');
-      // const captured = Buffer.from(base64Screenshot, 'base64');
-      // const ignoreComparison = get(context, 'options.ignoreComparison', this.ignoreComparison);
+    if (referenceData) {
+      console.log('Comparing');
+      const ignoreComparison = get(context, 'options.ignoreComparison', this.ignoreComparison);
 
-      // console.time('compare');
-      // const compareData = await TerraCompare.compareImages(referenceData, captured, ignoreComparison);
-      // console.timeEnd('compare');
+      const compareData = await TerraCompare.compareImages(referenceData, capturedData, ignoreComparison);
+      console.log(compareData);
 
-      // const { isSameDimensions } = compareData;
-      // const misMatchPercentage = Number(compareData.misMatchPercentage);
-      // const misMatchTolerance = get(context, 'options.misMatchTolerance', this.misMatchTolerance);
+      const misMatchPercentage = Number(compareData.misMatchPercentage);
+      const misMatchTolerance = get(context, 'options.misMatchTolerance', this.misMatchTolerance);
 
-      // const diffPath = this.getDiffFile(context);
+      if (misMatchPercentage > misMatchTolerance) {
+        const png = compareData.getDiffImage().pack();
+        const diffImageData = await TerraCompare.createDiff(png);
 
-      // if (misMatchPercentage > misMatchTolerance) {
-      //   const png = compareData.getDiffImage().pack();
-      //   await TerraCompare.writeDiff(png, diffPath);
-
-      //   return this.createResultReport(misMatchPercentage, false, isSameDimensions);
-      // }
-
-      // await fs.remove(diffPath);
-
-      // return this.createResultReport(misMatchPercentage, true, isSameDimensions);
-
+        await s3.upload({
+          ACL: 'public-read',
+          Bucket: bucketName,
+          Key: diffPath,
+          Body: diffImageData,
+          ContentType: 'image/png',
+        }).promise().catch((error) => {
+          console.log(error);
+          return Promise.reject(error);
+        });
+      }
+    } else {
       await s3.upload({
         ACL: 'public-read',
+        Bucket: bucketName,
         Key: referencePath,
-        Body: Buffer.from(base64Screenshot, 'base64'),
+        Body: capturedData,
         ContentType: 'image/png',
       }).promise().catch((error) => {
         console.log(error);
@@ -74,11 +98,11 @@ export default class TerraCompare extends BaseCompare {
       });
     }
 
-    console.time('upload');
     await s3.upload({
       ACL: 'public-read',
+      Bucket: bucketName,
       Key: screenshotPath,
-      Body: Buffer.from(base64Screenshot, 'base64'),
+      Body: capturedData,
       ContentType: 'image/png',
       Metadata: {
         referencekey: referencePath,
@@ -88,9 +112,8 @@ export default class TerraCompare extends BaseCompare {
       console.log(error);
       return Promise.reject(error);
     });
-    console.timeEnd('upload');
 
-    // await fs.outputFile(referencePath, base64Screenshot, 'base64');
+    console.log('Returning');
 
     return this.createResultReport(0, true, true);
   }
@@ -127,20 +150,14 @@ export default class TerraCompare extends BaseCompare {
    * @param  {Stream} png node-png file Stream.
    * @return {Promise}
    */
-  static async writeDiff(png, filepath) {
-    await new Promise((resolve, reject) => {
+  static async createDiff(png) {
+    return new Promise((resolve, reject) => {
       const chunks = [];
       png.on('data', (chunk) => {
         chunks.push(chunk);
       });
       png.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-
-        Promise
-          .resolve()
-          .then(() => fs.outputFile(filepath, buffer.toString('base64'), 'base64'))
-          .then(() => resolve())
-          .catch(reject);
+        resolve(Buffer.concat(chunks));
       });
       png.on('error', err => reject(err));
     });

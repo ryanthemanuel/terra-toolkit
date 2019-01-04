@@ -20,8 +20,7 @@ function createTestName(fullName) {
   name = name.replace(/[\s+.]/g, '_');
 
   // Remove windows reserved characters. See: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx#naming_conventions
-  // eslint-disable-next-line no-useless-escape
-  name = name.replace(/[\?\<\>\/\\|\*\"\:\+\.]/g, '-');
+  name = name.replace(/[?<>/\\|*":+.]/g, '-');
 
   return name;
 }
@@ -66,8 +65,7 @@ function getScreenshotDir(context) {
 
 function getScreenshotPath(ref) {
   return (context) => {
-    let testPath = path.join(path.basename(process.cwd()), process.env.TRAVIS_PULL_REQUEST, path.relative(process.cwd(), path.dirname(context.test.file)));
-    console.log(testPath);
+    let testPath = path.join(process.env.TRAVIS_PULL_REQUEST, path.relative(process.cwd(), path.dirname(context.test.file)));
 
     const baseDir = global.browser.options.baseScreenshotDir;
     if (baseDir) {
@@ -80,7 +78,7 @@ function getScreenshotPath(ref) {
     }
     const refDir = screenshotSetup[`${ref}Dir`];
 
-    return path.join(testPath, '__snapshots__', refDir, getScreenshotDir(context), getScreenshotName(context));
+    return path.join(refDir, testPath, getScreenshotDir(context), getScreenshotName(context));
   };
 }
 
