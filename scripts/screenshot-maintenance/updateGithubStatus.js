@@ -30,7 +30,9 @@ const createStatus = async () => {
     repo,
     sha: process.env.TRAVIS_PULL_REQUEST_SHA,
     state: (await getObjectsData()).length > 0 ? 'pending' : 'success',
-    context: 'manuel status',
+    description: 'Reviewed by CI',
+    target_url: `http://c02vv0qwhtdg.northamerica.cerner.net:3000/owners/${owner}/repositories/${repo}/screenshots`,
+    context: 'Screenshot Approval',
   }).then((result) => {
     console.log(result);
   }).catch((error) => {

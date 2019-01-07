@@ -65,7 +65,7 @@ function getScreenshotDir(context) {
 
 function getScreenshotPath(ref) {
   return (context) => {
-    let testPath = path.join(process.env.TRAVIS_PULL_REQUEST, path.relative(process.cwd(), path.dirname(context.test.file)));
+    let testPath = path.join(path.relative(process.cwd(), path.dirname(context.test.file)));
 
     const baseDir = global.browser.options.baseScreenshotDir;
     if (baseDir) {
@@ -78,7 +78,7 @@ function getScreenshotPath(ref) {
     }
     const refDir = screenshotSetup[`${ref}Dir`];
 
-    return path.join(refDir, testPath, getScreenshotDir(context), getScreenshotName(context));
+    return path.join(process.env.TRAVIS_PULL_REQUEST, refDir, testPath, getScreenshotDir(context), getScreenshotName(context));
   };
 }
 
