@@ -7,7 +7,7 @@ const getObjectsData = async () => {
   const s3 = new AWS.S3();
   const objectsData = await s3.listObjectsV2({
     Bucket: process.env.TRAVIS_PULL_REQUEST_SLUG.replace(/[?<>/\\|*":+.]/g, '-'),
-    Prefix: 'diff',
+    Prefix: `${process.env.TRAVIS_PULL_REQUEST}/diff`,
   }).promise();
   return objectsData.Contents.map(object => object.key);
 };
